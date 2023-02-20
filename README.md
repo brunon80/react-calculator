@@ -2,6 +2,10 @@
 
 ![Image](https://i.imgur.com/gfHk2nZ.png)
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c5bf18ce-9536-44c7-973f-914d5e974031/deploy-status)](https://app.netlify.com/sites/vite-ts-react-calculator/deploys)
+
+[Click here to see in live](https://vite-ts-react-calculator.netlify.app/)
+
 ## Todo
 - Create Enums for operators and special keys
 - Better visualization when an operation is pending
