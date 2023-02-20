@@ -1,0 +1,12 @@
+/* Display */
+
+.display {
+  padding: 20px;
+  color: var(--gray00);
+  font-size: 50px;
+  text-align: right;
+  width: var(--width);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}

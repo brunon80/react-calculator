@@ -1,0 +1,74 @@
+/* Digits Grid */
+
+.digits-container {  
+  /* height: 100%; */
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  gap: 1px;
+  grid-auto-flow: row;
+  grid-template-areas:
+    "add subtract multiply divide"
+    "seven eight nine equal"
+    "four five six equal"
+    "one two three equal"
+    "zero zero clear equal";
+}
+
+.digit {
+  background-color: var(--gray05);
+  border: none;
+  padding: 20px;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+.digit--operator {
+  background-color: var(--gray15);
+}
+
+.digit--operator:focus {
+  background-color: var(--gray45);
+}
+
+.digit--result {
+  background-color: var(--light-orange);
+}
+
+.digit:active {
+  background-color: var(--gray45);
+}
+
+.add { grid-area: add; }
+
+.divide { grid-area: divide; }
+
+.multiply { grid-area: multiply; }
+
+.subtract { grid-area: subtract; }
+
+.seven { grid-area: seven; }
+
+.eight { grid-area: eight; }
+
+.nine { grid-area: nine; }
+
+.four { grid-area: four; }
+
+.five { grid-area: five; }
+
+.six { grid-area: six; }
+
+.one { grid-area: one; }
+
+.two { grid-area: two; }
+
+.three { grid-area: three; }
+
+.zero { grid-area: zero; }
+
+.dot { grid-area: dot; }
+
+.clear { grid-area: clear; }
+
+.equal { grid-area: equal; }

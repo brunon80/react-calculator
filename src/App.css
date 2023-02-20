@@ -1,0 +1,27 @@
+:root {
+  --hihello-purple: #7239d6;
+  --light-blue: #9ec9db;
+  --light-orange: #f87d4f;
+  --theme-color: #0a0a23;
+  --gray90: #0a0a23;
+  --gray85: #1b1b32;
+  --gray80: #2a2a40;
+  --gray75: #3b3b4f;
+  --gray45: #858591;
+  --gray15: #d0d0d5;
+  --gray10: #dfdfe2;
+  --gray05: #eeeef0;
+  --gray00: #fff;
+  --width: 380px
+}
+
+#root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+body {
+  background-color: var(--hihello-purple);
+}
