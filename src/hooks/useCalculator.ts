@@ -60,10 +60,10 @@ export function useCalculator() {
         shouldResetAfterCalculate = false
         onClear()
       }
-
+      
       setExpression((prevState) => {
         const leftOperand = expression.currentOperationValue.includes('-')
-          ? parseFloat(`-${Math.abs(Number(prevState.currentOperationValue))}${operand}`)
+          ? parseFloat(`-${Math.abs(prevState.currentOperationValue === "-" ? 0 : Number(prevState.currentOperationValue))}${operand}`)
           : parseFloat(`${prevState.currentOperationValue}${operand}`)
 
         return ({
