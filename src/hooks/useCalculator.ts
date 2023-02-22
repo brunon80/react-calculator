@@ -63,8 +63,8 @@ export function useCalculator() {
 
       setExpression((prevState) => {
         const leftOperand = expression.currentOperationValue.includes('-')
-          ? parseFloat(`-${Math.abs(prevState.leftOperand)}${operand}`)
-          : parseFloat(`${prevState.leftOperand}${operand}`)
+          ? parseFloat(`-${Math.abs(Number(prevState.currentOperationValue))}${operand}`)
+          : parseFloat(`${prevState.currentOperationValue}${operand}`)
 
         return ({
           ...prevState,
@@ -77,7 +77,7 @@ export function useCalculator() {
       setExpression((prevState) => {
         const rightOperand = !expression.rightOperand
           ? operand
-          : parseFloat(`${prevState.rightOperand}${operand}`)
+          : parseFloat(`${prevState.currentOperationValue}${operand}`)
 
         return ({
           ...prevState,
@@ -88,6 +88,14 @@ export function useCalculator() {
     }
   }
 
+  function updatePointNumber(input: string) {
+    if (expression.currentOperationValue.includes('.')) {
+      return
+    } 
+
+    setExpression({ ...expression, currentOperationValue: `${expression.currentOperationValue}${input}` })
+  }
+
   function handleClickDigit(event: React.MouseEvent<HTMLButtonElement>) {
     const input = event.currentTarget.innerHTML
 
@@ -95,6 +103,12 @@ export function useCalculator() {
     const isOperand = !specialKeys.includes(input) && !isOperator
     const shouldCalculate = input === '='
     const shouldClear = input === 'AC'
+
+    const isFloatPoint = input === '.'
+
+    if (isFloatPoint) {
+      updatePointNumber(input)
+    }
 
     if (isOperator) {
       updateOperator(input)
@@ -113,12 +127,12 @@ export function useCalculator() {
     }
   }
 
-  const currentOperationValue = isNaN(parseFloat(expression.currentOperationValue))
-    ? expression.currentOperationValue
-    : new Intl.NumberFormat('en-us', { maximumFractionDigits: 9 }).format(parseFloat(expression.currentOperationValue))
+  // const currentOperationValue = isNaN(parseFloat(expression.currentOperationValue))
+  //   ? expression.currentOperationValue
+  //   : new Intl.NumberFormat('en-us', { maximumFractionDigits: 9 }).format(parseFloat(expression.currentOperationValue))
 
   return {
     handleClickDigit,
-    currentOperationValue
+    currentOperationValue: expression.currentOperationValue
   }
 }

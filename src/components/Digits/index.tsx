@@ -21,6 +21,7 @@ const Digits: React.FC<DigitsProps> = ({ handleClickDigit }) => {
       <button onClick={handleClickDigit} className="two digit">2</button>
       <button onClick={handleClickDigit} className="three digit">3</button>
       <button onClick={handleClickDigit} className="zero digit">0</button>
+      <button onClick={handleClickDigit} className="dot digit">.</button>
       <button onClick={handleClickDigit} className="clear digit">AC</button>
       <button onClick={handleClickDigit} className="equal digit digit--result">=</button>
     </div>
