@@ -51,17 +51,15 @@ export function useCalculator() {
     }
   }
 
-  function isFloat(n: number | string){
+  function isFloat(n: number){
     return Number(n) === n && n % 1 !== 0;
 }
 
-  function parseOperand(prevOperand: number | null | string, newOperand: string, isFloatNumber: boolean) {
+  function parseOperand(prevOperand: number | null, newOperand: string, isFloatNumber: boolean) {
     let value = newOperand
-    const isNegative = value.includes('-') || prevOperand === '-0'
+    const isNegative = value.includes('-') || Object.is(prevOperand, -0)
 
-    if (isNegative) {
-      value = prevOperand === 0 || prevOperand === null ? `${newOperand}` : `${prevOperand}${newOperand}`
-    }
+    value = prevOperand === 0 || prevOperand === null ? `${newOperand}` : `${prevOperand}${newOperand}`
 
     if (isFloatNumber) {
       if (prevOperand && isFloat(prevOperand)) {
@@ -69,7 +67,7 @@ export function useCalculator() {
       } 
       else {
         const floatValue= `${prevOperand === null ? 0 : prevOperand}.${newOperand}`
-        value = isNegative && !floatValue.includes('-0.') ?  `-${floatValue}` : floatValue
+        value = isNegative ?  `-${floatValue}` : floatValue
       }
     }
 
@@ -89,7 +87,7 @@ export function useCalculator() {
 
       if (expression.currentOperationValue === '-') operand = `-${operand}`
 
-      const  leftOperand = parseOperand(expression.currentOperationValue === '-0.' ? '-0'  : expression.leftOperand, operand, isFloatNumber)
+      const  leftOperand = parseOperand(expression.leftOperand, operand, isFloatNumber)
 
 
       setExpression({

@@ -16,4 +16,5 @@ export function calculate(expression: Expression) {
         return null
     }
   }
+  return null
 }
