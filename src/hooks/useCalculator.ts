@@ -3,8 +3,8 @@ import { operations, specialKeys } from "../constants"
 import { calculate } from "../lib/calculator"
 
 export type Expression = {
-  leftOperand: number,
-  rightOperand: number,
+  leftOperand: null | number,
+  rightOperand: null | number,
   currentOperationValue: string,
   operator: null | string
 }
@@ -13,16 +13,16 @@ let shouldResetAfterCalculate = false
 
 export function useCalculator() {
   const [expression, setExpression] = useState<Expression>({
-    operator: null, 
-    leftOperand: 0, 
-    rightOperand: 0, 
-    currentOperationValue: '0' 
+    operator: null,
+    leftOperand: null,
+    rightOperand: null,
+    currentOperationValue: '0'
   })
 
   function executeExpression() {
     const result = calculate(expression)
     if (result || result === 0) {
-      setExpression({ leftOperand: result, rightOperand: 0, operator: null, currentOperationValue: result.toString() })
+      setExpression({ leftOperand: result, rightOperand: null, operator: null, currentOperationValue: result.toString() })
       shouldResetAfterCalculate = true
       return result.toString()
     }
@@ -51,8 +51,33 @@ export function useCalculator() {
     }
   }
 
+  function isFloat(n: number | string){
+    return Number(n) === n && n % 1 !== 0;
+}
+
+  function parseOperand(prevOperand: number | null | string, newOperand: string, isFloatNumber: boolean) {
+    let value = newOperand
+    const isNegative = value.includes('-') || prevOperand === '-0'
+
+    if (isNegative) {
+      value = prevOperand === 0 || prevOperand === null ? `${newOperand}` : `${prevOperand}${newOperand}`
+    }
+
+    if (isFloatNumber) {
+      if (prevOperand && isFloat(prevOperand)) {
+        value = `${prevOperand}${newOperand}`
+      } 
+      else {
+        const floatValue= `${prevOperand === null ? 0 : prevOperand}.${newOperand}`
+        value = isNegative && !floatValue.includes('-0.') ?  `-${floatValue}` : floatValue
+      }
+    }
+
+    return value
+  }
+
   function updateOperands(input: string) {
-    const operand = parseFloat(input)
+    let operand = input
     const shouldUpdateLeftOperand = !expression.operator || expression.currentOperationValue.includes('-') && expression.operator === '-'
 
     if (shouldUpdateLeftOperand) {
@@ -60,30 +85,35 @@ export function useCalculator() {
         shouldResetAfterCalculate = false
         onClear()
       }
-      
-      setExpression((prevState) => {
-        const leftOperand = expression.currentOperationValue.includes('-')
-          ? parseFloat(`-${Math.abs(prevState.currentOperationValue === "-" ? 0 : Number(prevState.currentOperationValue))}${operand}`)
-          : parseFloat(`${prevState.currentOperationValue}${operand}`)
+      const isFloatNumber = (expression.currentOperationValue.match(/\./g) || []).length === 1
 
-        return ({
-          ...prevState,
-          leftOperand,
-          currentOperationValue: leftOperand.toString(),
-        })
+      if (expression.currentOperationValue === '-') operand = `-${operand}`
+
+      const  leftOperand = parseOperand(expression.currentOperationValue === '-0.' ? '-0'  : expression.leftOperand, operand, isFloatNumber)
+
+
+      setExpression({
+        ...expression,
+        leftOperand: parseFloat(leftOperand as string),
+        currentOperationValue: leftOperand,
       })
-
     } else {
-      setExpression((prevState) => {
-        const rightOperand = !expression.rightOperand
-          ? operand
-          : parseFloat(`${prevState.currentOperationValue}${operand}`)
-
-        return ({
-          ...prevState,
-          rightOperand,
-          currentOperationValue: rightOperand.toString()
-        })
+      let shouldParseAsFloat = false
+      
+      if (expression.rightOperand === null) {
+        shouldParseAsFloat = false
+      } else {
+        const isFloatNumber = (expression.currentOperationValue.match(/\./g) || []).length === 1
+        if (isFloatNumber && expression.rightOperand !== null) {
+          shouldParseAsFloat = true
+        }
+      }
+      
+      const rightOperand = parseOperand(expression.rightOperand, operand, shouldParseAsFloat)
+      setExpression({
+        ...expression,
+        rightOperand: parseFloat(rightOperand as string),
+        currentOperationValue: rightOperand.toString()
       })
     }
   }
@@ -91,7 +121,7 @@ export function useCalculator() {
   function updatePointNumber(input: string) {
     if (expression.currentOperationValue.includes('.')) {
       return
-    } 
+    }
 
     setExpression({ ...expression, currentOperationValue: `${expression.currentOperationValue}${input}` })
   }
@@ -115,7 +145,7 @@ export function useCalculator() {
     }
 
     if (isOperand) {
-     updateOperands(input)
+      updateOperands(input)
     }
 
     if (shouldClear) {
